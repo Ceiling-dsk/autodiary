@@ -1,0 +1,15 @@
+# 个人数据：绝不提交
+data/
+samples/
+profile/
+.env
+*.db
+*.db-*
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# macOS
+.DS_Store

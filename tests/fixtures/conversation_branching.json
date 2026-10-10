@@ -1,0 +1,150 @@
+{
+  "conversation_id": "conv-test-1",
+  "title": "旅行问答",
+  "create_time": 1791525000.0,
+  "update_time": 1791540060.0,
+  "mapping": {
+    "root": {
+      "id": "root",
+      "message": null,
+      "parent": null,
+      "children": [
+        "sys"
+      ]
+    },
+    "sys": {
+      "id": "sys",
+      "message": {
+        "id": "sys",
+        "author": {
+          "role": "system"
+        },
+        "create_time": null,
+        "content": {
+          "content_type": "text",
+          "parts": [
+            ""
+          ]
+        },
+        "metadata": {
+          "is_visually_hidden_from_conversation": true
+        }
+      },
+      "parent": "root",
+      "children": [
+        "u1"
+      ]
+    },
+    "u1": {
+      "id": "u1",
+      "message": {
+        "id": "u1",
+        "author": {
+          "role": "user"
+        },
+        "create_time": 1791525000.0,
+        "content": {
+          "content_type": "text",
+          "parts": [
+            "今晚在盐湖城吃了拉面，推荐一下明天的徒步路线？"
+          ]
+        },
+        "metadata": {}
+      },
+      "parent": "sys",
+      "children": [
+        "a1"
+      ]
+    },
+    "a1": {
+      "id": "a1",
+      "message": {
+        "id": "a1",
+        "author": {
+          "role": "assistant"
+        },
+        "create_time": 1791525060.0,
+        "content": {
+          "content_type": "text",
+          "parts": [
+            "可以考虑 Ensign Peak，往返约 1.6 公里。"
+          ]
+        },
+        "metadata": {
+          "model_slug": "gpt-5"
+        }
+      },
+      "parent": "u1",
+      "children": [
+        "u2"
+      ]
+    },
+    "u2": {
+      "id": "u2",
+      "message": {
+        "id": "u2",
+        "author": {
+          "role": "user"
+        },
+        "create_time": 1791539940.0,
+        "content": {
+          "content_type": "multimodal_text",
+          "parts": [
+            "这张照片里是哪座山？",
+            {
+              "content_type": "image_asset_pointer",
+              "asset_pointer": "file-service://x"
+            }
+          ]
+        },
+        "metadata": {}
+      },
+      "parent": "a1",
+      "children": [
+        "a2a",
+        "a2b"
+      ]
+    },
+    "a2a": {
+      "id": "a2a",
+      "message": {
+        "id": "a2a",
+        "author": {
+          "role": "assistant"
+        },
+        "create_time": 1791540000.0,
+        "content": {
+          "content_type": "text",
+          "parts": [
+            "（被重新生成掉的旧回答）"
+          ]
+        },
+        "metadata": {}
+      },
+      "parent": "u2",
+      "children": []
+    },
+    "a2b": {
+      "id": "a2b",
+      "message": {
+        "id": "a2b",
+        "author": {
+          "role": "assistant"
+        },
+        "create_time": 1791540060.0,
+        "content": {
+          "content_type": "text",
+          "parts": [
+            "看起来像 Mount Olympus。"
+          ]
+        },
+        "metadata": {
+          "model_slug": "gpt-5"
+        }
+      },
+      "parent": "u2",
+      "children": []
+    }
+  },
+  "current_node": "a2b"
+}
