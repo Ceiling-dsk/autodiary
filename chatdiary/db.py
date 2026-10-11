@@ -12,7 +12,9 @@ CREATE TABLE IF NOT EXISTS conversations (
     create_time      REAL,
     update_time      REAL,
     deleted_upstream INTEGER NOT NULL DEFAULT 0,
-    last_seen_at     REAL
+    last_seen_at     REAL,
+    project          TEXT,
+    remote_update_time REAL
 );
 
 CREATE TABLE IF NOT EXISTS messages (
@@ -53,7 +55,25 @@ def connect(path: Path) -> sqlite3.Connection:
     conn = sqlite3.connect(path)
     conn.row_factory = sqlite3.Row
     conn.executescript(SCHEMA)
+    # 旧库补列
+    cols = {r["name"] for r in conn.execute("PRAGMA table_info(conversations)")}
+    for col, typ in (("project", "TEXT"), ("remote_update_time", "REAL")):
+        if col not in cols:
+            conn.execute(f"ALTER TABLE conversations ADD COLUMN {col} {typ}")
     return conn
+
+
+def remote_update_times(conn: sqlite3.Connection) -> dict[str, float]:
+    """上次抓取时列表接口给出的 update_time，用来判断对话是否有变化。"""
+    return {r["id"]: r["remote_update_time"] for r in conn.execute(
+        "SELECT id, remote_update_time FROM conversations WHERE remote_update_time IS NOT NULL")}
+
+
+def mark_fetched(conn: sqlite3.Connection, conv_id: str, project: str | None,
+                 remote_update_time: float | None):
+    with conn:
+        conn.execute("UPDATE conversations SET project=?, remote_update_time=? WHERE id=?",
+                     (project, remote_update_time, conv_id))
 
 
 def upsert_conversation(conn: sqlite3.Connection, conv: Conversation) -> int:
@@ -83,3 +103,10 @@ def upsert_conversation(conn: sqlite3.Connection, conv: Conversation) -> int:
                  m.model, int(m.on_main_branch), int(m.hidden), m.raw_json),
             )
     return len(conv.messages)
+
+
+def set_projects(conn: sqlite3.Connection, projects: dict[str, str | None]):
+    """对话可能被移入/移出项目，每次列表后同步已有对话的项目名。"""
+    with conn:
+        conn.executemany("UPDATE conversations SET project=? WHERE id=?",
+                         [(proj, cid) for cid, proj in projects.items()])

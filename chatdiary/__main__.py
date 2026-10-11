@@ -48,6 +48,16 @@ def cmd_search(args):
         print(f"{r['life_day']}  {r['title']}  [{r['role']}]  {r['snip']}")
 
 
+def cmd_login(args):
+    from .fetch import login
+    login()
+
+
+def cmd_fetch(args):
+    from .fetch import fetch
+    fetch(limit=args.limit, headless=args.headless)
+
+
 def main():
     p = argparse.ArgumentParser(prog="chatdiary")
     sub = p.add_subparsers(required=True)
@@ -66,6 +76,14 @@ def main():
     s = sub.add_parser("search", help="全文搜索（至少 3 个字符）")
     s.add_argument("query")
     s.set_defaults(func=cmd_search)
+
+    s = sub.add_parser("login", help="打开 Chrome 登录 ChatGPT（登录状态保存在 profile/）")
+    s.set_defaults(func=cmd_login)
+
+    s = sub.add_parser("fetch", help="从 ChatGPT 抓取新增或有变化的对话并导入")
+    s.add_argument("--limit", type=int, help="最多抓取 N 个对话（试跑用）")
+    s.add_argument("--headless", action="store_true", help="不显示浏览器窗口")
+    s.set_defaults(func=cmd_fetch)
 
     args = p.parse_args()
     args.func(args)
